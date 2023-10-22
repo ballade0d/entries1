@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>商品列表</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #222;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+         .btn {
+             position: fixed;
+             top: 10px;
+             right: 10px;
+             padding: 10px;
+             background-color: #fff;
+             color: #000;
+             border: none;
+             cursor: pointer;
+         }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(3px);
+            z-index: 1;
+        }
+
+        .modal {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 0.4rem;
+            width: 450px;
+            padding: 1.3rem;
+            min-height: 250px;
+            position: absolute;
+            top: 20%;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            z-index: 2;
+        }
+
+        .modal .flex {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            font-weight: 600;
+        }
+
+        .confirm {
+            transform: translate(165px, 45px);
+            display: inline-block;
+            padding: 0.8rem 1.4rem;
+            font-weight: 700;
+            background-color: black;
+            color: white;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1em;
+        }
+
+        .btn-close {
+            transform: translate(380px, -10px);
+            padding: 0.5rem 0.7rem;
+            background: #eee;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+
+<h1>商品列表</h1>
+
+<button class="btn" onclick=shoppingCart()>打开购物车</button>
+
+<section class="modal">
+    <div class="flex">
+        <button class="btn-close" onclick=closeModal()>⨉</button>
+    </div>
+    <div>
+        <h3>请确认商品信息</h3>
+        <p id="modalContent1"></p>
+        <p id="modalContent2"></p>
+        <p id="modalContent3"></p>
+    </div>
+    <button class="confirm">确认</button>
+</section>
+
+<div class="overlay"></div>
+
+<table id="items">
+    <thead>
+    <tr>
+        <th>名称</th>
+        <th>品牌</th>
+        <th>价格</th>
+        <th>分类</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- 表格内容将通过 JavaScript 动态生成 -->
+    </tbody>
+</table>
+
+<script>
+
+    const modal = document.querySelector(".modal");
+    const overlay = document.querySelector(".overlay");
+
+    const openModal = function () {
+        modal.style.display = 'block';
+        overlay.style.display = 'block';
+    };
+
+    const closeModal = function () {
+        modal.style.display = 'none';
+        overlay.style.display = 'none';
+    };
+
+    const confirm = document.querySelector(".confirm");
+
+    function shoppingCart() {
+        // 在点击事件中重定向到新页面
+        window.location.href = 'shoppingCart.html';
+    }
+
+
+    const tbody = document.querySelector('#items tbody');
+    // 使用JavaScript获取后端接口数据并填充表格
+    fetch('http://localhost:8081/listItem')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                tbody.appendChild(row);
+
+                const nameCell = document.createElement('td');
+                nameCell.textContent = item.name;
+                row.appendChild(nameCell);
+
+                const brandCell = document.createElement('td');
+                brandCell.textContent = item.brand;
+                row.appendChild(brandCell);
+
+                const priceCell = document.createElement('td');
+                priceCell.textContent = item.price;
+                row.appendChild(priceCell);
+
+                const categoryCell = document.createElement('td');
+                categoryCell.textContent = item.category;
+                row.appendChild(categoryCell);
+
+                const actionsCell = document.createElement('td');
+                const button = document.createElement('button');
+                button.textContent = '添加到购物车';
+                button.addEventListener('click', () => {
+                    {
+                        const modalContent = document.getElementById('modalContent1');
+                        modalContent.textContent = '名称: ' + item.name;
+                    }
+                    {
+                        const modalContent = document.getElementById('modalContent2');
+                        modalContent.textContent = '价格: ' + item.price;
+                    }
+                    {
+                        const modalContent = document.getElementById('modalContent3');
+                        modalContent.textContent = '品牌: ' + item.brand;
+                    }
+                    openModal();
+                    confirm.addEventListener('click', ()=>{
+                        // 用户点击了确认按钮
+                        const url = 'http://localhost:8081/addToCart';
+                        const params = 'id=' + item.id;
+
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('POST', url, true);
+                        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                        xhr.send(params);
+
+                        closeModal();
+                    });
+                });
+                actionsCell.appendChild(button);
+                row.appendChild(actionsCell);
+
+                tbody.appendChild(row);
+            })
+        })
+        .catch(error => {
+            console.error('获取商品数据时出错:', error);
+        });
+</script>
+</body>
+</html>

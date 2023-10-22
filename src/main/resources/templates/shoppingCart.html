@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>购物车</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+    }
+
+    .btn {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      padding: 10px;
+      background-color: #fff;
+      color: #000;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h1>购物车</h1>
+
+<button class="btn" onclick=shoppingCart()>返回主页</button>
+
+<table id="items">
+  <thead>
+  <tr>
+    <th>名称</th>
+    <th>品牌</th>
+    <th>价格</th>
+    <th>分类</th>
+  </tr>
+  </thead>
+  <tbody>
+  <!-- 表格内容将通过 JavaScript 动态生成 -->
+  </tbody>
+</table>
+
+<script>
+  function shoppingCart() {
+    // 在点击事件中重定向到新页面
+    window.location.href = 'index.html';
+  }
+
+  const tbody = document.querySelector('#items tbody');
+  // 使用JavaScript获取后端接口数据并填充表格
+  fetch('http://localhost:8081/listShoppingCart')
+          .then(response => response.json())
+          .then(data => {
+            data.forEach(item =>{
+              const row = document.createElement('tr');
+              tbody.appendChild(row);
+
+              const nameCell = document.createElement('td');
+              nameCell.textContent = item.name;
+              row.appendChild(nameCell);
+
+              const brandCell = document.createElement('td');
+              brandCell.textContent = item.brand;
+              row.appendChild(brandCell);
+
+              const priceCell = document.createElement('td');
+              priceCell.textContent = item.price;
+              row.appendChild(priceCell);
+
+              const categoryCell = document.createElement('td');
+              categoryCell.textContent = item.category;
+              row.appendChild(categoryCell);
+
+              const actionsCell = document.createElement('td');
+              const button = document.createElement('button');
+              button.textContent = '从购物车删除';
+              button.addEventListener('click', () => {
+                const url = 'http://localhost:8081/removeFromCart';
+                const params = 'id=' + item.id;
+
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', url, true);
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                xhr.send(params);
+
+                location.reload();
+              });
+              actionsCell.appendChild(button);
+              row.appendChild(actionsCell);
+
+              tbody.appendChild(row);
+            })
+          })
+          .catch(error => {
+            console.error('获取商品数据时出错:', error);
+          });
+</script>
+</body>
+</html>
