@@ -1,106 +1,291 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8">
-  <title>购物车</title>
-  <style>
-    table {
-      border-collapse: collapse;
-      width: 100%;
-    }
+    <meta charset="UTF-8">
+    <title>购物车</title>
+    <style>
+        ul, li {
+            list-style: none;
+        }
 
-    th, td {
-      border: 1px solid black;
-      padding: 8px;
-      text-align: left;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", sans-serif;
+        }
 
-    .btn {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      padding: 10px;
-      background-color: #fff;
-      color: #000;
-      border: none;
-      cursor: pointer;
-    }
-  </style>
+        body {
+            color: #222;
+            position: relative;
+            min-height: 100vh;
+            background: linear-gradient(to right, rgb(30, 150, 150), rgb(26, 207, 114));
+            padding: 5px;
+        }
+
+        .head {
+            background: rgb(31 195 160);
+            height: 60px;
+        }
+
+        ul {
+
+            height: 60px;
+            width: 200px;
+        }
+
+        .head > ul > li > img {
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            line-height: 60px;
+            margin-left: 15px;
+            margin-top: 14px;
+            vertical-align: auto;
+            float: left;
+        }
+
+        .head > ul > .oi {
+            font-size: 20px;
+            line-height: 60px;
+            margin-left: 60px;
+
+
+        }
+
+        table {
+            margin-top: 60px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border: none;
+        }
+
+        .btn {
+            position: fixed;
+            top: 75px;
+            left: 8px;
+            padding: 10px;
+            background-color: rgb(33, 67, 189);
+            color: #000;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(3px);
+            z-index: 1;
+        }
+
+        .modal {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 0.4rem;
+            width: 450px;
+            padding: 1.3rem;
+            min-height: 250px;
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            z-index: 2;
+        }
+
+        .modal .flex {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            font-weight: 600;
+        }
+
+        .confirm {
+            transform: translate(165px, 45px);
+            display: inline-block;
+            padding: 0.8rem 1.4rem;
+            font-weight: 700;
+            background-color: black;
+            color: white;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1em;
+        }
+
+        .btn-close {
+            transform: translate(380px, -10px);
+            padding: 0.5rem 0.7rem;
+            background: #eee;
+            border-radius: 50%;
+        }
+    </style>
 </head>
 <body>
 
-<h1>购物车</h1>
+<section class="modal">
+    <div class="flex">
+        <button class="btn-close" onclick=closeModal()>⨉</button>
+    </div>
+    <div>
+        <h3>你将删除以下商品</h3>
+        <p id="modalContent1"></p>
+        <p id="modalContent2"></p>
+        <p id="modalContent3"></p>
+    </div>
+    <button class="confirm">确认</button>
+</section>
 
-<button class="btn" onclick=shoppingCart()>返回主页</button>
+<div class="overlay"></div>
+
+<div class="head">
+    <ul>
+        <li><img alt="" src="shoppingCart.jpg"></li>
+        <li class="oi">我的购物车</li>
+    </ul>
+</div>
+
+<button class="btn" onclick=index()>返回商品列表</button>
 
 <table id="items">
-  <thead>
-  <tr>
-    <th>名称</th>
-    <th>品牌</th>
-    <th>价格</th>
-    <th>分类</th>
-  </tr>
-  </thead>
-  <tbody>
-  <!-- 表格内容将通过 JavaScript 动态生成 -->
-  </tbody>
+    <thead>
+    <tr>
+        <th>序号</th>
+        <th>商品类别</th>
+        <th>商品名称</th>
+        <th>商品品牌</th>
+        <th>商品价格</th>
+        <th>商品数量</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- 表格内容将通过 JavaScript 动态生成 -->
+    </tbody>
 </table>
 
 <script>
-  function shoppingCart() {
-    // 在点击事件中重定向到新页面
-    window.location.href = 'index.html';
-  }
+    function index() {
+        // 在点击事件中重定向到新页面
+        window.location.href = 'index.html';
+    }
 
-  const tbody = document.querySelector('#items tbody');
-  // 使用JavaScript获取后端接口数据并填充表格
-  fetch('http://localhost:8081/listShoppingCart')
-          .then(response => response.json())
-          .then(data => {
-            data.forEach(item =>{
-              const row = document.createElement('tr');
-              tbody.appendChild(row);
+    const modal = document.querySelector(".modal");
+    const overlay = document.querySelector(".overlay");
 
-              const nameCell = document.createElement('td');
-              nameCell.textContent = item.name;
-              row.appendChild(nameCell);
+    const openModal = function () {
+        modal.style.display = 'block';
+        overlay.style.display = 'block';
+    };
 
-              const brandCell = document.createElement('td');
-              brandCell.textContent = item.brand;
-              row.appendChild(brandCell);
+    const closeModal = function () {
+        modal.style.display = 'none';
+        overlay.style.display = 'none';
+    };
 
-              const priceCell = document.createElement('td');
-              priceCell.textContent = item.price;
-              row.appendChild(priceCell);
+    const confirm = document.querySelector(".confirm");
 
-              const categoryCell = document.createElement('td');
-              categoryCell.textContent = item.category;
-              row.appendChild(categoryCell);
+    const tbody = document.querySelector('#items tbody');
+    // 使用JavaScript获取后端接口数据并填充表格
+    fetch('http://localhost:8081/listShoppingCart')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                tbody.appendChild(row);
 
-              const actionsCell = document.createElement('td');
-              const button = document.createElement('button');
-              button.textContent = '从购物车删除';
-              button.addEventListener('click', () => {
-                const url = 'http://localhost:8081/removeFromCart';
-                const params = 'id=' + item.id;
+                const nameCell = document.createElement('td');
+                nameCell.textContent = item.name;
+                row.appendChild(nameCell);
 
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', url, true);
-                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                xhr.send(params);
+                const brandCell = document.createElement('td');
+                brandCell.textContent = item.brand;
+                row.appendChild(brandCell);
 
-                location.reload();
-              });
-              actionsCell.appendChild(button);
-              row.appendChild(actionsCell);
+                const priceCell = document.createElement('td');
+                priceCell.textContent = item.price;
+                row.appendChild(priceCell);
 
-              tbody.appendChild(row);
+                const categoryCell = document.createElement('td');
+                categoryCell.textContent = item.category;
+                row.appendChild(categoryCell);
+
+                const actionsCell = document.createElement('td');
+                const button = document.createElement('button');
+                button.textContent = '从购物车删除';
+                button.addEventListener('click', () => {
+                    {
+                        const modalContent = document.getElementById('modalContent1');
+                        modalContent.textContent = '名称: ' + item.name;
+                    }
+                    {
+                        const modalContent = document.getElementById('modalContent2');
+                        modalContent.textContent = '价格: ' + item.price;
+                    }
+                    {
+                        const modalContent = document.getElementById('modalContent3');
+                        modalContent.textContent = '品牌: ' + item.brand;
+                    }
+                    openModal();
+                    confirm.addEventListener('click', () => {
+                        // 用户点击了确认按钮
+                        const url = 'http://localhost:8081/removeFromCart';
+                        const params = 'id=' + item.id;
+
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('POST', url, true);
+                        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                        xhr.send(params);
+
+                        closeModal();
+
+                        location.reload();
+                    });
+                });
+                actionsCell.appendChild(button);
+                row.appendChild(actionsCell);
+
+                tbody.appendChild(row);
             })
-          })
-          .catch(error => {
+        })
+        .catch(error => {
             console.error('获取商品数据时出错:', error);
-          });
+        });
+
+    // 当窗口大小变化时重新居中模态框
+    window.addEventListener('resize', centerModal);
+
+    // 居中显示模态框
+    function centerModal() {
+        const modalContent = document.querySelector('.modal');
+        const modalWidth = 450;
+        const modalHeight = 250;
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+
+        modalContent.style.left = (windowWidth - modalWidth) / 2 + 'px';
+        modalContent.style.top = (windowHeight - modalHeight) / 2 + 'px';
+    }
+
+    // 初始化居中显示
+    centerModal();
 </script>
 </body>
 </html>
