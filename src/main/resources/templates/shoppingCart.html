@@ -29,7 +29,6 @@
         }
 
         ul {
-
             height: 60px;
             width: 200px;
         }
@@ -49,8 +48,6 @@
             font-size: 20px;
             line-height: 60px;
             margin-left: 60px;
-
-
         }
 
         table {
@@ -172,7 +169,6 @@
         <th>商品名称</th>
         <th>商品品牌</th>
         <th>商品价格</th>
-        <th>商品数量</th>
         <th>操作</th>
     </tr>
     </thead>
@@ -211,6 +207,14 @@
                 const row = document.createElement('tr');
                 tbody.appendChild(row);
 
+                const idCell = document.createElement('td');
+                idCell.textContent = item.id;
+                row.appendChild(idCell);
+
+                const categoryCell = document.createElement('td');
+                categoryCell.textContent = item.category;
+                row.appendChild(categoryCell);
+
                 const nameCell = document.createElement('td');
                 nameCell.textContent = item.name;
                 row.appendChild(nameCell);
@@ -222,10 +226,6 @@
                 const priceCell = document.createElement('td');
                 priceCell.textContent = item.price;
                 row.appendChild(priceCell);
-
-                const categoryCell = document.createElement('td');
-                categoryCell.textContent = item.category;
-                row.appendChild(categoryCell);
 
                 const actionsCell = document.createElement('td');
                 const button = document.createElement('button');

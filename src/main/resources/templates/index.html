@@ -320,69 +320,6 @@
         .then(data => {
             data.forEach(item => {
                 insertRow(item.id, item.category, item.name, item.brand, item.price);
-                /*
-                const row = document.createElement('tr');
-                tbody.appendChild(row);
-
-                const idCell = document.createElement('td');
-                idCell.textContent = item.id;
-                row.appendChild(idCell);
-
-                const categoryCell = document.createElement('td');
-                categoryCell.textContent = item.category;
-                row.appendChild(categoryCell);
-
-                const nameCell = document.createElement('td');
-                nameCell.textContent = item.name;
-                row.appendChild(nameCell);
-
-                const brandCell = document.createElement('td');
-                brandCell.textContent = item.brand;
-                row.appendChild(brandCell);
-
-                const priceCell = document.createElement('td');
-                priceCell.textContent = item.price;
-                row.appendChild(priceCell);
-                 */
-
-                /*
-
-                const actionsCell = document.createElement('td');
-                const button = document.createElement('button');
-                button.textContent = '添加到购物车';
-                button.addEventListener('click', () => {
-                    {
-                        const modalContent = document.getElementById('modalContent1');
-                        modalContent.textContent = '名称: ' + item.name;
-                    }
-                    {
-                        const modalContent = document.getElementById('modalContent2');
-                        modalContent.textContent = '价格: ' + item.price;
-                    }
-                    {
-                        const modalContent = document.getElementById('modalContent3');
-                        modalContent.textContent = '品牌: ' + item.brand;
-                    }
-                    openModal();
-                    confirm.addEventListener('click', () => {
-                        // 用户点击了确认按钮
-                        const url = 'http://localhost:8081/addToCart';
-                        const params = 'id=' + item.id;
-
-                        const xhr = new XMLHttpRequest();
-                        xhr.open('POST', url, true);
-                        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                        xhr.send(params);
-
-                        closeModal();
-                    });
-                });
-                actionsCell.appendChild(button);
-                row.appendChild(actionsCell);
-
-                */
-
-                // tbody.appendChild(row);
             })
         }).finally(() => {
         showPage(currentPage);
