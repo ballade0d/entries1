@@ -31,11 +31,6 @@
         .paged-table tr {
         }
 
-        /* 显示当前页的表格行 */
-        .paged-table tr.page-1 {
-            display: table-row;
-        }
-
         th, td {
             border: none;
             padding: 8px;
@@ -158,8 +153,8 @@
             background-color: rgb(33, 67, 189);
             border-radius: 5px;
             margin-left: 10px;
-            height: 37.6px;
-            width: 86.65px;
+            height: 38px;
+            width: 87px;
             padding: 10px;
             margin-top: 8px;
         }
@@ -311,10 +306,7 @@
         window.location.href = 'shoppingCart.html';
     }
 
-
-    const tbody = document.querySelector('#items tbody');
     // 使用JavaScript获取后端接口数据并填充表格
-
     fetch('http://localhost:8081/listItem')
         .then(response => response.json())
         .then(data => {
