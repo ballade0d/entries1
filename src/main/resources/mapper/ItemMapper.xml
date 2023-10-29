@@ -4,13 +4,22 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.edu.njupt.bit.entries1.mapper.ItemMapper">
 
-    <select id="listItem" resultType="java.util.HashMap">
-        SELECT id, name, brand, price, category
+    <resultMap id="item" type="cn.edu.njupt.bit.entries1.pojo.Item">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="brand" column="brand"/>
+        <result property="price" column="price"/>
+        <result property="category" column="category"/>
+        <result property="mode" column="mode"/>
+    </resultMap>
+
+    <select id="listItem" resultMap="item">
+        SELECT *
         FROM shoppinglist
     </select>
 
-    <select id="listShoppingCart" resultType="java.util.HashMap">
-        SELECT id, name, brand, price, category
+    <select id="listShoppingCart" resultMap="item">
+        SELECT *
         FROM shoppinglist
         WHERE mode = 1
     </select>
